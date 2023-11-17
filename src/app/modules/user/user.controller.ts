@@ -6,11 +6,17 @@ import httpStatus from 'http-status';
 import pick from '../../../shared/pick';
 import { paginationFields } from '../../../constants/pagination';
 import { IUser } from './user.interface';
+import { usersFilterableFields } from './user.constant';
 
 const getAllUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const paginationOptions = pick(req.query, paginationFields);
-    const result = await UserService.getAllUser(paginationOptions);
+    const filterOptions = pick(req.query, usersFilterableFields);
+
+    const result = await UserService.getAllUser(
+      paginationOptions,
+      filterOptions
+    );
     sendResponse<IUser[]>(res, {
       statusCode: httpStatus.OK,
       success: true,

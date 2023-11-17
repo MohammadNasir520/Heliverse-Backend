@@ -8,3 +8,9 @@ export type IUser = {
   domain: string;
   available: boolean;
 };
+
+export type IUserFilterableOptions = {
+  searchTerm?: string | undefined;
+  domain?: string;
+  available?: string;
+};
