@@ -61,10 +61,22 @@ const updateUser: RequestHandler = catchAsync(
     });
   }
 );
+const deleteUser: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await UserService.deleteUser(req.params.id);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'user deleted successfully',
+      data: result,
+    });
+  }
+);
 
 export const UserController = {
   getAllUser,
   getSingleUser,
   createUser,
   updateUser,
+  deleteUser,
 };
