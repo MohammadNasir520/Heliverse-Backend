@@ -12,7 +12,8 @@ const getAllUser = async (
     paginationHelper.calculationPagination(paginationOptions);
 
   const { searchTerm, ...filtersData } = filterOptions;
-  console.log(typeof searchTerm, filtersData);
+  // console.log('keyes', Object.keys(filtersData)); //keyes [ 'domain', 'available' ]
+  // console.log('entries', Object.entries(filtersData)); //entries [ [ 'domain', 'finance' ], [ 'available', 'true' ] ]
 
   const andCondition = [];
 
@@ -27,7 +28,14 @@ const getAllUser = async (
     });
   }
 
-  //   const whereCondition = andCondition.length > 0 ? { $and: andCondition } : {};
+  if (Object.keys(filtersData).length) {
+    andCondition.push({
+      $and: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: [value],
+      })),
+    });
+  }
+
   const whereCondition = andCondition.length > 0 ? { $and: andCondition } : {};
 
   const users = await User.find(whereCondition).skip(skip).limit(limit);
