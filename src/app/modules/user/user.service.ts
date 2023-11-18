@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { paginationHelper } from '../../helpers/paginationHelper';
 import { usersSearchableFields } from './user.constant';
@@ -50,6 +52,15 @@ const getAllUser = async (
   };
 };
 
+const getSingleUser = async (id: string) => {
+  const user = await User.findOne({ id: id });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
+  }
+  return user;
+};
+
 export const UserService = {
   getAllUser,
+  getSingleUser,
 };
