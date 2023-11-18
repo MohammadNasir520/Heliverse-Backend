@@ -7,6 +7,14 @@ import { IUser, IUserFilterableOptions } from './user.interface';
 import { User } from './user.model';
 import { generateIncrementalUserId } from './user.utils';
 
+const createUser = async (data: IUser) => {
+  const incrementId = await generateIncrementalUserId();
+
+  data.id = incrementId;
+  const user = await User.create(data);
+  return user;
+};
+
 const getAllUser = async (
   paginationOptions: IPaginationOptions,
   filterOptions: IUserFilterableOptions
@@ -61,16 +69,23 @@ const getSingleUser = async (id: string): Promise<IUser> => {
   return user;
 };
 
-const createUser = async (data: IUser) => {
-  const incrementId = await generateIncrementalUserId();
+const updateUser = async (
+  id: string,
+  payload: Partial<IUser>
+): Promise<IUser | null> => {
+  const isExist = await User.findOne({ id: id });
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
+  }
 
-  data.id = incrementId;
-  const user = await User.create(data);
+  const user = await User.findOneAndUpdate({ id: id }, payload, { new: true });
+
   return user;
 };
 
 export const UserService = {
+  createUser,
   getAllUser,
   getSingleUser,
-  createUser,
+  updateUser,
 };

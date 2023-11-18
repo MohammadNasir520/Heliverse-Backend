@@ -8,6 +8,18 @@ import { paginationFields } from '../../../constants/pagination';
 import { IUser } from './user.interface';
 import { usersFilterableFields } from './user.constant';
 
+const createUser: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await UserService.createUser(req.body);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'user created successfully',
+      data: result,
+    });
+  }
+);
+
 const getAllUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const paginationOptions = pick(req.query, paginationFields);
@@ -38,13 +50,13 @@ const getSingleUser: RequestHandler = catchAsync(
     });
   }
 );
-const createUser: RequestHandler = catchAsync(
+const updateUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const result = await UserService.createUser(req.body);
+    const result = await UserService.updateUser(req.params.id, req.body);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'user created successfully',
+      message: 'user update successfully',
       data: result,
     });
   }
@@ -54,4 +66,5 @@ export const UserController = {
   getAllUser,
   getSingleUser,
   createUser,
+  updateUser,
 };
