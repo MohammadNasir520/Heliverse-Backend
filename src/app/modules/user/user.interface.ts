@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 export type IUser = {
   id: number;
   first_name: string;
@@ -8,6 +10,7 @@ export type IUser = {
   domain: string;
   available: boolean;
   password: string;
+  team?: Types.ObjectId;
 };
 
 export type IUserFilterableOptions = {

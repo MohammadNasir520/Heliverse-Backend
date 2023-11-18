@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 import { IUser } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../../config';
@@ -37,6 +37,10 @@ const userSchema = new Schema<IUser>({
   domain: {
     type: String,
     required: true,
+  },
+  team: {
+    type: Types.ObjectId,
+    ref: 'Team',
   },
 });
 

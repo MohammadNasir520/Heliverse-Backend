@@ -62,7 +62,7 @@ const getAllUser = async (
 };
 
 const getSingleUser = async (id: string): Promise<IUser> => {
-  const user = await User.findOne({ id: id });
+  const user = await User.findOne({ id: id }).populate('team');
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
   }
