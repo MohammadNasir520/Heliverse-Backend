@@ -3,8 +3,9 @@ import ApiError from '../../../errors/ApiError';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { paginationHelper } from '../../helpers/paginationHelper';
 import { usersSearchableFields } from './user.constant';
-import { IUserFilterableOptions } from './user.interface';
+import { IUser, IUserFilterableOptions } from './user.interface';
 import { User } from './user.model';
+import { generateIncrementalUserId } from './user.utils';
 
 const getAllUser = async (
   paginationOptions: IPaginationOptions,
@@ -52,7 +53,7 @@ const getAllUser = async (
   };
 };
 
-const getSingleUser = async (id: string) => {
+const getSingleUser = async (id: string): Promise<IUser> => {
   const user = await User.findOne({ id: id });
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
@@ -60,7 +61,16 @@ const getSingleUser = async (id: string) => {
   return user;
 };
 
+const createUser = async (data: IUser) => {
+  const incrementId = await generateIncrementalUserId();
+
+  data.id = incrementId;
+  const user = await User.create(data);
+  return user;
+};
+
 export const UserService = {
   getAllUser,
   getSingleUser,
+  createUser,
 };

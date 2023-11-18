@@ -38,8 +38,20 @@ const getSingleUser: RequestHandler = catchAsync(
     });
   }
 );
+const createUser: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await UserService.createUser(req.body);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'user created successfully',
+      data: result,
+    });
+  }
+);
 
 export const UserController = {
   getAllUser,
   getSingleUser,
+  createUser,
 };
