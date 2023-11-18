@@ -7,7 +7,7 @@ export type IUser = {
   avatar: string;
   domain: string;
   available: boolean;
-  password?: string;
+  password?: string | undefined;
 };
 
 export type IUserFilterableOptions = {

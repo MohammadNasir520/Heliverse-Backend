@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Schema, model } from 'mongoose';
 import { IUser } from './user.interface';
+import bcrypt from 'bcrypt';
+import config from '../../../config';
 
 const userSchema = new Schema<IUser>({
   id: {
@@ -17,7 +20,7 @@ const userSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    // required: true,
+    required: true,
   },
   email: {
     type: String,
@@ -35,6 +38,20 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: true,
   },
+});
+
+userSchema.pre('save', async function (next) {
+  try {
+    // @ts-ignore
+    this.password = await bcrypt.hash(
+      // @ts-ignore
+      this.password,
+      Number(config.bycrypt_salt_rounds)
+    );
+    next();
+  } catch (error: any) {
+    next(error);
+  }
 });
 
 export const User = model<IUser>('User', userSchema);
