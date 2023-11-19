@@ -26,7 +26,7 @@ const login = async (payload: IUserLogin) => {
 
   const accessToken = jwtHelpers.createToken(
     {
-      id: isExist.id,
+      userId: isExist._id,
       email: isExist.email,
     },
     config.jwt.secret as Secret,

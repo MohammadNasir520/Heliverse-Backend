@@ -62,7 +62,7 @@ const getAllUser = async (
 };
 
 const getSingleUser = async (id: string): Promise<IUser> => {
-  const user = await User.findOne({ id: id }).populate('team');
+  const user = await User.findById(id).populate('team');
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
   }
@@ -73,17 +73,17 @@ const updateUser = async (
   id: string,
   payload: Partial<IUser>
 ): Promise<IUser | null> => {
-  const isExist = await User.findOne({ id: id });
+  const isExist = await User.findById(id);
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
   }
 
-  const user = await User.findOneAndUpdate({ id: id }, payload, { new: true });
+  const user = await User.findOneAndUpdate({ _id: id }, payload, { new: true });
   return user;
 };
 
 const deleteUser = async (id: string) => {
-  const user = await User.findOneAndDelete({ id: id });
+  const user = await User.findOneAndDelete({ _id: id });
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
   }
