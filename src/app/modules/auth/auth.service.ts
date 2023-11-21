@@ -12,13 +12,11 @@ const login = async (payload: IUserLogin) => {
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'invalid user');
   }
-  console.log(isExist);
 
   const isPasswordMatched = await bcrypt.compare(
     payload.password,
     isExist.password
   );
-  console.log(isPasswordMatched);
 
   if (!isPasswordMatched) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid Password');

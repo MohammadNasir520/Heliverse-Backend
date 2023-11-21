@@ -10,7 +10,7 @@ export type IUser = {
   domain: string;
   available: boolean;
   password: string;
-  team?: Types.ObjectId;
+  team?: Types.ObjectId | Types.ObjectId[];
 };
 
 export type IUserFilterableOptions = {

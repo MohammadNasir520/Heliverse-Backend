@@ -23,8 +23,7 @@ const getAllUser = async (
     paginationHelper.calculationPagination(paginationOptions);
 
   const { searchTerm, ...filtersData } = filterOptions;
-  // console.log('keyes', Object.keys(filtersData)); //keyes [ 'domain', 'available' ]
-  // console.log('entries', Object.entries(filtersData)); //entries [ [ 'domain', 'finance' ], [ 'available', 'true' ] ]
+  console.log('filtersData', filtersData);
 
   const andCondition = [];
 
@@ -42,7 +41,7 @@ const getAllUser = async (
   if (Object.keys(filtersData).length) {
     andCondition.push({
       $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: [value],
+        [field]: value,
       })),
     });
   }

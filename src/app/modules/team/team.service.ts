@@ -8,8 +8,33 @@ import { Types } from 'mongoose';
 const createTeam = async (payload: ITeam, userId: Types.ObjectId) => {
   payload.creator = userId;
 
-  console.log(payload);
-  const team = (await Team.create(payload)).populate('creator');
+  const user = await User.findById(payload?.members[0]);
+  // if (!user?.available) {
+  //   throw new ApiError(
+  //     httpStatus.BAD_REQUEST,
+  //     'user is not available for making team'
+  //   );
+  // }
+  console.log('user', user);
+
+  const team = await (await Team.create(payload)).populate('creator');
+  console.log('new team', team);
+
+  for (const memberId of payload.members) {
+    const userUpdate = await User.findByIdAndUpdate(memberId, {
+      team: team._id,
+      available: false,
+    });
+    console.log('user Update', userUpdate);
+  }
+
+  const UpdateCreator = await User.updateOne(
+    { _id: userId },
+    { $addToSet: { team: (await team)._id } },
+    { upsert: true, new: true }
+  );
+  console.log('uupdate creator ', UpdateCreator);
+
   return team;
 };
 const addMemberToTeam = async (userId: string, teamId: string) => {
@@ -22,7 +47,6 @@ const addMemberToTeam = async (userId: string, teamId: string) => {
   }
 
   const isTeamExist = await Team.findOne({ _id: teamId }).populate('members');
-  console.log('team', isTeamExist);
 
   if (!isTeamExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Team not found');
@@ -35,8 +59,6 @@ const addMemberToTeam = async (userId: string, teamId: string) => {
   });
 
   const teamUniqueDomainArray = Array.from(teamUniqueDomain);
-
-  console.log('team U d A', teamUniqueDomainArray);
 
   if (teamUniqueDomainArray.includes(isUserExist?.domain)) {
     throw new ApiError(
@@ -63,7 +85,13 @@ const addMemberToTeam = async (userId: string, teamId: string) => {
 };
 
 const getAllTeamByUserId = async (id: string) => {
-  const teams = await Team.find({ id });
+  const teams = await Team.find({ creator: id }).populate('members');
+  if (!teams) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "you haven't create any team yet "
+    );
+  }
   return teams;
 };
 
